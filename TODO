@@ -1,0 +1,14 @@
+-*-org-*-
+
+* TODO [#D] URL normalization
+  For XFN spider `http://test.com`, `http://www.test.com` and
+  `http://www.test.com/` are all different sites, so they are enlisted
+  as different nodes in the resulting XML file.
+  Workaround is to use pages' titles as labels of graph nodes.
+  Is it a bug at all??
+* TODO Tags must be case-insensitive
+  They are normalized at XFN processing but not translated to
+  lowercase.
+* TODO Respect hCard
+* TODO Page title may be way too long for a graph node label
+* TODO [#D] Multithread processing 

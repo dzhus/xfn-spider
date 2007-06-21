@@ -1,0 +1,201 @@
+-*-org-*-
+
+* Overview
+
+** What it is
+
+   XFN Spider is a tool to extract microformatted content from XHTML
+   Friends Networks. It consists of a set of XSLT stylesheets and
+   Python wrapper script. It also has several stylsheets to use
+   results in 3rd party applications.
+
+** How does it work
+
+*** XSLT to extract µf from pages
+
+    `mf-extract.xsl` currently extracts `<a></a>` elements with `rel=""`
+    attributes conforming to XFN and rel-tag microformats using XPath expressions.
+    
+    The result of applying transformation to a valid (X)HTML document
+    is something like this:
+
+        <?xml version="1.0"?>
+        <site url="http://frobong.probnification.com">
+          <title>Frobong probnification</title>
+          <relations>
+            <rel url="http://hardwaremaniacs.org/golb" type="colleague"/>
+            <rel url="http://blog.romashkin.ru" type="friend colleague"/>
+            <rel url="http://supablog.livejournal.com" type="acquaintance colleague"/>
+            <rel url="http://tangas.sale.net" type="neighbor contact"/>
+            <rel url="http://www.urinal.ru" type="date colleague"/>
+            <rel url="http://journal.cn" type="met friend colleague co-resident"/>
+          </relations>               
+          <tags>
+            <tag>sex</tag>
+            <tag>drugs</tag>
+            <tag>rock&roll</tag>
+          </tags>
+        </site>
+
+*** Python program to process XFN network recursively
+
+    The `xfn-spider.py` script extracts microformats first from the
+    «entry-point» page, then from all pages which are XFN-related to
+    the first and so on.
+
+    Recursive process actually consists of three steps:
+
+    1. Process current URL (apply XSLT `mf-extract.xsl`)
+    2. Calculate a list of URLs to process next (apply another XSLT
+       `get-urls.xsl` to get plain list of links)
+    3. Do the same upon each entry in URL list formed at step 2.
+
+    First script's command-line option is «entry»-page URL, maximum
+    processing depth (defaults to 1) comes second. Depth 0 means only
+    to extract XFN links on the very first page.
+
+    Resulting XML file is simply printed to standard output after all
+    pages have been processed.
+
+    Usage example:
+    
+        $ ./xfn-spider.py http://bopik.com 0 > output.xml
+
+    The result of program execution is XML file describing XFN network
+    (see `network.dtd`). Example follows:
+
+        <?xml version="1.0"?>
+        <network>
+          <site url="http://bopik.com/">
+            <title>Bopik's Writings</title>
+            <relations>
+              <rel url="http://fanfamfax.com" type="friend colleague" />
+              <rel url="http://qurinal.com" type="date neighbor" />
+            </relations>
+            <tags>
+              <tag>violence</tag>
+              <tag>microformats</tag>
+              <tag>phtagn</tag>
+            </tags>
+          </site>
+          <site url="http://qurinal.com">
+            <title>qUrinal: best info source for developers</title>
+          </site>
+          <site url="http://fanfamfax.com">
+            <title>F^3</title>
+          </site>
+        </network>
+
+    Please note that `xfn-spider.py` processes pages which are one
+    level beyond the maximum depth to extract their titles.
+
+    This format will be extended to respect embedded hCards and
+    geotags.
+
+    The result may be processed by `xmllint` with
+    `--format` option to pretty-print XML:
+
+        $ xmllint --format output.xml
+
+**** Postprocessing `xfn-spider.py` performs
+     Pages with the same titles are considered to be duplicates, so
+     only one of them is left in the resulting XML file. Pages parser
+     choked are kept untouched as empty `<site></site>` elements with
+     only `url=""` attributes.
+
+** What can be done with the resulting XML file
+
+*** Transform the result into a DOT file
+
+    Another XSLT (`makedot.xsl`) is applied to the result of Python
+    script execution, transforming high-level XM L data into a DOT
+    format graph definition which is to be passed to Graphviz programs
+    to create a graphical map of XFN. For example, the following
+    command may be used to generate PNG image with XFN graph:
+
+        $ xsltproc makedot.xsl output.xml | dot -Tpng -o network.png
+    
+    where `output.xml` is the output of `xfn-spider.py`.
+
+    To change style of resulting map you need to edit `makedot.xsl`
+    stylesheet! Lines just after `digraph G {` is a good place to set
+    general graph options. Please see Graphviz documentation for
+    available options.
+
+    Currently `makedot.xsl` shipped with XFN Spider doesn't produce
+    really sane DOT files. The stylesheet will be seriously updated in
+    future versions.
+
+*** Transform the result into a «Many Eyes»-compliant network description
+    Many Eyes is IBM's initiative «for shared visualization and
+    discovery». It has features to upload your data and visualize it
+    in a bunch of different ways, including visualizing social
+    networks.
+
+    Many Eyes' network applet requires data to be formatted in two
+    columns separated with `TAB`:
+
+    Person	Knows
+    Dmitry	Irina
+    Dmitry	Tatyana
+    Irina	Dmitry
+    Olga	Irina
+    Irina	Tatyana
+    Tatyana	Olga
+    Tatyana	Dmitry
+
+    Let's assume you have `output.xml` as a result of XFN Spider's
+    execution.
+    
+    Extract required data from it:
+
+        $ xsltproc make-manyeyes-network.xsl output.xml > manyeyes.txt
+        
+    Know you can paste `manyeyes.txt` as a dataset on «Many Eyes».
+    
+* Requirements
+
+  To run XFN spider, you need recent versions of the following tools:
+  - Python
+  - libxml2
+  - Graphviz (to generate XFN graphs)
+ 
+* Quick start
+
+  1. Make `xfn-spider.py` executable:
+
+      $ chmod +x xfn-spider.py
+
+  2. Choose «entry point», processing depth and generate XML file:
+     
+      $ ./xfn-spider.py http://site-with-xfn.com 2 > output.xml
+
+  3. Try to convert your `output.xml` to graph via Graphviz:
+
+      $ xsltproc makedot.xsl output.xml | dot -Tpng -o network.png
+
+* Source files
+
+  Following source files are included:
+
+  1. `xfn-spider.py`: main Python script
+
+  2. `mf-extract.xsl` and `mf-extract-bottom.xsl`: stylesheets to
+     extract microformats from XHTML pages.
+     
+     `mf-extract-bottom.xsl` is applied to pages which are at the
+     maximum depth level. It is used to extract *only page titles*.
+
+  3. `get-urls.xsl`: used to extract plain text list of URLs to be
+     processed next.
+
+  4. `makedot.xsl`: example stylesheet to convert `xfn-spider.py`
+     result to a DOT file which is to be directed to Graphviz.
+
+  5. `network.dtd`: DTD which may be used to validate the result of
+     `xfn-spider.py`. Not used in program.
+
+  6. `make-xfn-conds.sh`: service script to generate list of XSLT
+     conditional statements to be used in `mf-extract-bottom.xsl` and
+     `mf-extract.xsl`. Not used in program.
+     

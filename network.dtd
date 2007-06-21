@@ -1,0 +1,13 @@
+<!ELEMENT network (site+)>
+<!ELEMENT site (title?, relations?, tags?)>
+<!ELEMENT relations (rel*)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT rel EMPTY>
+<!ELEMENT tags (tag*)>
+<!ELEMENT tag (#PCDATA)>
+
+<!ATTLIST site 
+          url CDATA #REQUIRED>
+<!ATTLIST rel
+          url CDATA #REQUIRED
+          type NMTOKENS #REQUIRED>
