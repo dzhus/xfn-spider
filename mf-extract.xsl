@@ -34,7 +34,7 @@
       </tags>
     </site>
   </xsl:template>
-  
+
   <xsl:template match="//xhtml:a[@rel]" name="rel-link">
     <xsl:choose>
       <xsl:when test="contains(@rel, 'contact')"><xsl:call-template name="xfn-link" /></xsl:when>

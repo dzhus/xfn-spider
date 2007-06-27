@@ -1,5 +1,5 @@
 -*-org-*-
-
+        
 * Overview
 
 ** What it is
@@ -99,9 +99,10 @@
 
 **** Postprocessing `xfn-spider.py` performs
      Pages with the same titles are considered to be duplicates, so
-     only one of them is left in the resulting XML file. Pages parser
-     choked are kept untouched as empty `<site></site>` elements with
-     only `url=""` attributes.
+     only one of them is kept untouched in the resulting XML
+     file. Pages parser choked on are kept untouched as empty
+     `<site></site>` elements with only `url=""` attributes. See
+     `postprocess.xsl` for details.
 
 ** What can be done with the resulting XML file
 
@@ -158,8 +159,9 @@
   To run XFN spider, you need recent versions of the following tools:
   - Python
   - libxml2
-  - Graphviz (to generate XFN graphs)
- 
+  - HTML Tidy
+  - µtidylib for Python
+  
 * Quick start
 
   1. Make `xfn-spider.py` executable:
@@ -174,6 +176,10 @@
 
       $ xsltproc makedot.xsl output.xml | dot -Tpng -o network.png
 
+  4. You may also generate many-eyes.com-compliant data set:
+
+      $ xsltproc make-many-eyes.xsl output.xml > manyeyes.txt
+
 * Source files
 
   Following source files are included:
@@ -186,16 +192,22 @@
      `mf-extract-bottom.xsl` is applied to pages which are at the
      maximum depth level. It is used to extract *only page titles*.
 
-  3. `get-urls.xsl`: used to extract plain text list of URLs to be
+  3. `postprocess.xsl` cleans up the result of XFN Spider.
+
+  4. `get-urls.xsl`: used to extract plain text list of URLs to be
      processed next.
 
-  4. `makedot.xsl`: example stylesheet to convert `xfn-spider.py`
+  5. `make-dot.xsl`: example stylesheet to convert `xfn-spider.py`
      result to a DOT file which is to be directed to Graphviz.
 
-  5. `network.dtd`: DTD which may be used to validate the result of
+  6. `make-many-eyes.xsl`: stylesheet to convert result into a Many
+     Eyes (many-eyes.com) compliant data set.
+
+  7. `network.dtd`: DTD which may be used to validate the result of
      `xfn-spider.py`. Not used in program.
 
-  6. `make-xfn-conds.sh`: service script to generate list of XSLT
+  8. `make-xfn-conds.sh`: service script to generate list of XSLT
      conditional statements to be used in `mf-extract-bottom.xsl` and
-     `mf-extract.xsl`. Not used in program.
+     `mf-extract.xsl`. Not used in program. Dirty hack (EXSLT regexp
+     should be used instead).
      
