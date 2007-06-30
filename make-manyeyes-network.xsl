@@ -32,8 +32,8 @@
   <xsl:template name="label-by-url">
     <xsl:param name="url" />
     <xsl:choose>
-      <xsl:when test="string-length(//site[contains(@url,$url)]/title) > 0">
-        <xsl:value-of select="//site[contains(@url,$url)]/title" />
+      <xsl:when test="string-length(//site[@url=$url]/title) > 0">
+        <xsl:value-of select="//site[@url=$url]/title" />
       </xsl:when>
       <xsl:otherwise>
         <xsl:value-of select="@url" />
