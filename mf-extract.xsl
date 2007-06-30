@@ -28,7 +28,7 @@
       <tags>
         <xsl:for-each select="//xhtml:a[@rel='tag']">
           <tag>
-            <xsl:value-of select="normalize-space(.)" />
+            <xsl:value-of select="translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')" />
           </tag>
         </xsl:for-each>
       </tags>

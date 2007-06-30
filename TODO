@@ -3,18 +3,19 @@
 * TODO [#A] XFN extraction bug
   For example, `rel="cosmetics"` matches current patterns while it
   doesn't comply with XFN format.
-* TODO [#A] URL normalization
+* TODO [#B] Respect hCard
+* DONE [#C] Tags must be lowercased
+  CLOSED: [2007-06-30 Сбт 21:14]
+  Currently tags are space-normalized at XFN processing but not
+  translated to lowercase.
+* TODO [#C] Page title may be way too long for a graph node label
+* DONE [#C] URL normalization
+  CLOSED: [2007-06-30 Сбт 20:10]
   For XFN spider `http://test.com`, `http://www.test.com` and
   `http://www.test.com/` are all different sites, so they are enlisted
   as different nodes in the resulting XML file!
 
   Workaround is to use pages' titles as labels of graph nodes.
-
-  Currently `postprocess.xsl` tries to delete dupes, but it also breaks
-  relations to duplicating pages.
-* TODO [#B] Respect hCard
-* TODO [#C] Tags must be lowercased
-  Currently tags are space-normalized at XFN processing but not
-  translated to lowercase.
-* TODO [#C] Page title may be way too long for a graph node label
+  
+  Currently `postprocess.xsl` seems to do the dupe-killing job well.
 * TODO [#D] Multithread processing 
