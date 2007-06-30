@@ -74,7 +74,7 @@ def processUrl(url, depth=0):
     if depth <= max_depth:
         nexturls_list = get_urls.applyStylesheet(site, None)
         for next in nexturls_list.get_content().splitlines():
-            processURL(next, depth + 1)        
+            processUrl(next, depth + 1)        
     
 processUrl(sys.argv[1])
 

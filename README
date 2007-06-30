@@ -184,7 +184,7 @@
 
   Following source files are included:
 
-  1. `xfn-spider.py`: main Python script
+  1. `xfn-spider.py`: main Python script.
 
   2. `mf-extract.xsl` and `mf-extract-bottom.xsl`: stylesheets to
      extract microformats from XHTML pages.
@@ -200,14 +200,14 @@
   5. `make-dot.xsl`: example stylesheet to convert `xfn-spider.py`
      result to a DOT file which is to be directed to Graphviz.
 
-  6. `make-many-eyes.xsl`: stylesheet to convert result into a Many
+  6. `make-manyeyes-network.xsl`: stylesheet to convert result into a Many
      Eyes (many-eyes.com) compliant data set.
 
   7. `network.dtd`: DTD which may be used to validate the result of
-     `xfn-spider.py`. Not used in program.
+     `xfn-spider.py`. Not used in program. May be broken.
 
   8. `make-xfn-conds.sh`: service script to generate list of XSLT
      conditional statements to be used in `mf-extract-bottom.xsl` and
-     `mf-extract.xsl`. Not used in program. Dirty hack (EXSLT regexp
+     `mf-extract.xsl`. Not used in program. Dirty hack (EXSLT regexps
      should be used instead).
      
