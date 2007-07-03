@@ -16,11 +16,11 @@ if len(sys.argv) <= 1:
     sys.exit(1)
 
 if len(sys.argv) <= 2:
-    max_depth = 1
+    max_depth = 0
 else:
     max_depth = int(sys.argv[2])
 
-slash_end = re.compile(r'/$')
+slash_end = re.compile(r'.*/$')
 
 # Load all necessary stylsheets
 mf_extract = libxslt.parseStylesheetFile("mf-extract.xsl")
@@ -38,7 +38,7 @@ def processUrl(url, depth=0):
     global processed_urls, network
 
     if slash_end.match(url):
-        url = slash_end.replace('', url)
+        url = re.sub(r'/$', '', url)
     
     if url in processed_urls:
         return

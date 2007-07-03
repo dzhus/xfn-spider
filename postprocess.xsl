@@ -26,7 +26,7 @@
                  (XSLT 2.0 has grouping feautures)
             -->
             
-            <xsl:if test="count(//site[title=current()/title][count(./relations/rel)>count(current()/relations/rel)])=0">
+            <xsl:if test="count(following::site[title=current()/title][count(./relations/rel)>=count(current()/relations/rel)])=0">
               
               <xsl:copy-of select="relations"/>
 
