@@ -4,6 +4,13 @@
   CLOSED: [2007-07-03 Втр 10:44]
   For example, `rel="cosmetics"` matches current patterns while it
   doesn't comply with XFN format.
+* TODO Improper handling of relative links	:bug:
+  E.g. <a href="/author">Link</a> on a site with URL
+  http://test.com/blog/latest/ will be extracted and treated as
+  http://test.com/blog/latest/author instead of
+  http://test.com/author.
+
+  Current solution is to ignore non-absolute links at all.
 * TODO [#B] Respect hCard
 * DONE [#C] Tags must be lowercased
   CLOSED: [2007-06-30 Сбт 21:14]

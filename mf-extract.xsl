@@ -75,7 +75,14 @@
   <xsl:template name="xfn-link">
     <rel>
       <xsl:attribute name="url">
-        <xsl:value-of select="@href" />
+        <xsl:choose>
+          <xsl:when test="starts-with(@href, 'http://')">
+            <xsl:value-of select="@href" />
+          </xsl:when>
+          <xsl:otherwise>
+            <xsl:value-of select="concat($site-url, @href)" />
+          </xsl:otherwise>
+        </xsl:choose>        
       </xsl:attribute>
       <xsl:attribute name="type">
         <xsl:value-of select="@rel" />
