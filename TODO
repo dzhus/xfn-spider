@@ -1,6 +1,7 @@
 -*-org-*-
 
-* TODO [#A] XFN extraction bug
+* DONE [#A] XFN extraction bug
+  CLOSED: [2007-07-03 Втр 10:44]
   For example, `rel="cosmetics"` matches current patterns while it
   doesn't comply with XFN format.
 * TODO [#B] Respect hCard

@@ -5,10 +5,13 @@
     exclude-result-prefixes = "xhtml"
     >
   <!-- 
-       `mf-extract.xfl` extracts microformatted content from XHTML,
+       `mf-extract.xsl` extracts microformatted content from XHTML,
        resulting in valid `site` element of «mf-network» XML format.
        
-       See `mf-network.dtd`.
+       See also `network.dtd`.
+       
+       Inspired by grokXFN.xsl, see
+       http://www.w3.org/2003/12/rdf-in-xhtml-xslts/grokXFN.xsl.
   -->
 
   <xsl:output method="xml" indent="yes"/>
@@ -22,12 +25,22 @@
       <title>
         <xsl:value-of select="normalize-space(//xhtml:title)" />
       </title>
+      <rss>
+        <xsl:call-template name="rss-link">
+          <xsl:with-param name="rss-url">
+            <xsl:value-of select="//xhtml:link[@rel='alternate'][@type='application/rss+xml']/@href" />
+          </xsl:with-param>
+        </xsl:call-template>
+      </rss>
       <relations>
         <xsl:apply-templates select="//xhtml:a[@rel]" />
       </relations>
       <tags>
         <xsl:for-each select="//xhtml:a[@rel='tag']">
           <tag>
+            <!--
+                Rather Bad case conversion example follows.
+            -->
             <xsl:value-of select="translate(normalize-space(.), 'ABCDEFGHIJKLMNOPQRSTUVWXYZ', 'abcdefghijklmnopqrstuvwxyz')" />
           </tag>
         </xsl:for-each>
@@ -37,23 +50,24 @@
 
   <xsl:template match="//xhtml:a[@rel]" name="rel-link">
     <xsl:choose>
-      <xsl:when test="contains(@rel, 'contact')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'friend')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'acquaintance')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'met')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'co-worker')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'colleague')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'co-resident')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'neighbor')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'child')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'parent')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'sibling')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'spouse')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'kin')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'muse')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'crush')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'date')"><xsl:call-template name="xfn-link" /></xsl:when>
-      <xsl:when test="contains(@rel, 'sweetheart')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' contact ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' friend ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' acquaintance ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' met ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' co-worker ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' colleague ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' co-resident ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' neighbor ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' child ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' parent ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' sibling ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' spouse ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' kin ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' muse ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' crush ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' date ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' sweetheart ')"><xsl:call-template name="xfn-link" /></xsl:when>
+      <xsl:when test="contains(concat(' ', @rel, ' '), ' me ')"><xsl:call-template name="xfn-link" /></xsl:when>
       <xsl:otherwise />
     </xsl:choose>
   </xsl:template>
@@ -67,6 +81,18 @@
         <xsl:value-of select="@rel" />
       </xsl:attribute>
     </rel>
+  </xsl:template>
+
+  <xsl:template name="rss-link">
+    <xsl:param name="rss-url" />
+    <xsl:choose>
+      <xsl:when test="starts-with($rss-url, 'http://')">
+        <xsl:value-of select="$rss-url" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="concat($site-url, $rss-url)" />
+      </xsl:otherwise>
+    </xsl:choose>
   </xsl:template>
 
 </xsl:transform>

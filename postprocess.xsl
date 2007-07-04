@@ -14,7 +14,7 @@
             <xsl:attribute name="url">
               <xsl:value-of select="@url" />
             </xsl:attribute>
-          
+
             <xsl:copy-of select="title"/>
             
             <!-- 
@@ -27,6 +27,8 @@
             -->
             
             <xsl:if test="count(following::site[title=current()/title][count(./relations/rel)>=count(current()/relations/rel)])=0">
+              
+              <xsl:copy-of select="rss" />
               
               <xsl:copy-of select="relations"/>
 

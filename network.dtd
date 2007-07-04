@@ -1,7 +1,8 @@
 <!ELEMENT network (site+)>
-<!ELEMENT site (title?, relations?, tags?)>
-<!ELEMENT relations (rel*)>
+<!ELEMENT site (title?, rss?, relations?, tags?)>
 <!ELEMENT title (#PCDATA)>
+<!ELEMENT rss (#PCDATA)>
+<!ELEMENT relations (rel*)>
 <!ELEMENT rel EMPTY>
 <!ELEMENT tags (tag*)>
 <!ELEMENT tag (#PCDATA)>
