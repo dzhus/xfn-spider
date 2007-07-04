@@ -85,14 +85,16 @@
 
   <xsl:template name="rss-link">
     <xsl:param name="rss-url" />
-    <xsl:choose>
-      <xsl:when test="starts-with($rss-url, 'http://')">
-        <xsl:value-of select="$rss-url" />
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="concat($site-url, $rss-url)" />
-      </xsl:otherwise>
-    </xsl:choose>
+    <xsl:if test="string-length($rss-url)>0">
+      <xsl:choose>
+        <xsl:when test="starts-with($rss-url, 'http://')">
+          <xsl:value-of select="$rss-url" />
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:value-of select="concat($site-url, $rss-url)" />
+        </xsl:otherwise>
+      </xsl:choose>
+    </xsl:if>
   </xsl:template>
 
 </xsl:transform>

@@ -22,6 +22,7 @@
         <?xml version="1.0"?>
         <site url="http://frobong.probnification.com">
           <title>Frobong probnification</title>
+          <rss>http://frobong.probnification.com/feeds/posts</rss>
           <relations>
             <rel url="http://hardwaremaniacs.org/golb" type="colleague"/>
             <rel url="http://blog.romashkin.ru" type="friend colleague"/>
@@ -68,6 +69,7 @@
         <network>
           <site url="http://bopik.com/">
             <title>Bopik's Writings</title>
+            <rss>http://bopik.com/feed.xml</rss>
             <relations>
               <rel url="http://fanfamfax.com" type="friend colleague" />
               <rel url="http://qurinal.com" type="date neighbor" />
@@ -83,6 +85,7 @@
           </site>
           <site url="http://fanfamfax.com">
             <title>F^3</title>
+            <rss>http://fanfamfax.com/rss/latest</rss>
           </site>
         </network>
 
@@ -108,22 +111,22 @@
 
 *** Transform the result into a DOT file
 
-    Another XSLT (`makedot.xsl`) is applied to the result of Python
+    Another XSLT (`make-graphviz.xsl`) is applied to the result of Python
     script execution, transforming high-level XM L data into a DOT
     format graph definition which is to be passed to Graphviz programs
     to create a graphical map of XFN. For example, the following
     command may be used to generate PNG image with XFN graph:
 
-        $ xsltproc makedot.xsl output.xml | dot -Tpng -o network.png
+        $ xsltproc make-graphviz.xsl output.xml | dot -Tpng -o network.png
     
     where `output.xml` is the output of `xfn-spider.py`.
 
-    To change style of resulting map you need to edit `makedot.xsl`
+    To change style of resulting map you need to edit `make-graphviz.xsl`
     stylesheet! Lines just after `digraph G {` is a good place to set
     general graph options. Please see Graphviz documentation for
     available options.
 
-    Currently `makedot.xsl` shipped with XFN Spider doesn't produce
+    Currently `make-graphviz.xsl` shipped with XFN Spider doesn't produce
     really sane DOT files. The stylesheet will be seriously updated in
     future versions.
 
@@ -154,6 +157,23 @@
         
     Know you can paste `manyeyes.txt` as a dataset on «Many Eyes».
     
+*** Transform the result into a list of RSS feeds in OPML format
+    It may sound interesting to get a list of RSS feeds for pages in
+    XHTML Friends Network:
+
+        $ xsltproc make-opml.xsl output.xml > xfn-feeds.opml
+
+    Now an `xfn-feeds.opml` file may be imported in your favourite
+    feed reading application.
+
+    In order to have its RSS link processed correctly, a page needs to
+    contain the following code:
+
+        <link rel="alternate" type="applications/rss+xml"
+        href="/url/to/feed" />
+
+    See http://www.w3.org/QA/Tips/use-links for details.
+
 * Requirements
 
   To run XFN spider, you need recent versions of the following tools:
@@ -172,9 +192,9 @@
      
       $ ./xfn-spider.py http://site-with-xfn.com 2 > output.xml
 
-  3. Try to convert your `output.xml` to graph via Graphviz:
+  3. Try to convert your `output.xml` to OPML feed list:
 
-      $ xsltproc makedot.xsl output.xml | dot -Tpng -o network.png
+      $ xsltproc make-opml.xsl output.xml > xfn-feeds.opml
 
   4. You may also generate many-eyes.com-compliant data set:
 
@@ -189,25 +209,30 @@
   2. `mf-extract.xsl` and `mf-extract-bottom.xsl`: stylesheets to
      extract microformats from XHTML pages.
      
-     `mf-extract-bottom.xsl` is applied to pages which are at the
+  3. `mf-extract-bottom.xsl` is applied to pages which are at the
      maximum depth level. It is used to extract *only page titles*.
 
-  3. `postprocess.xsl` cleans up the result of XFN Spider.
+  4. `postprocess.xsl` cleans up the result of XFN Spider.
 
-  4. `get-urls.xsl`: used to extract plain text list of URLs to be
+  5. `get-urls.xsl`: used to extract plain text list of URLs to be
      processed next.
 
-  5. `make-dot.xsl`: example stylesheet to convert `xfn-spider.py`
+  6. `make-graphviz.xsl`: example stylesheet to convert `xfn-spider.py`
      result to a DOT file which is to be directed to Graphviz.
 
-  6. `make-manyeyes-network.xsl`: stylesheet to convert result into a Many
+  7. `make-manyeyes-network.xsl`: stylesheet to convert result into a Many
      Eyes (many-eyes.com) compliant data set.
 
-  7. `network.dtd`: DTD which may be used to validate the result of
+  8. `make-manyeyes-tags.xsl`: stylesheet to convert result into a
+     list of tags used on pages from XFN.
+
+  9. `make-opml.xsl`: stylesheet to make an OPML file with a list of
+     RSS feeds for pages in processed XFN.
+
+  10. `network.dtd`: DTD which may be used to validate the result of
      `xfn-spider.py`. Not used in program. May be broken.
 
-  8. `make-xfn-conds.sh`: service script to generate list of XSLT
+  11. `make-xfn-conds.sh`: service script to generate list of XSLT
      conditional statements to be used in `mf-extract-bottom.xsl` and
      `mf-extract.xsl`. Not used in program. Dirty hack (EXSLT regexps
-     should be used instead).
-     
+     should be used instead).     
