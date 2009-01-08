@@ -155,7 +155,7 @@
 
         $ xsltproc make-manyeyes-network.xsl output.xml > manyeyes.txt
         
-    Know you can paste `manyeyes.txt` as a dataset on «Many Eyes».
+    Now you can paste `manyeyes.txt` as a dataset on «Many Eyes».
     
 *** Transform the result into a list of RSS feeds in OPML format
     It may sound interesting to get a list of RSS feeds for pages in
@@ -200,6 +200,10 @@
 
       $ xsltproc make-many-eyes.xsl output.xml > manyeyes.txt
 
+* Further reading
+  XFN Spider was originally created back in June 2007. Here is a blog
+  article (in russian) describing its design:
+  http://sphinx.net.ru/blog/entry/simple-microformat-xslt-extraction/
 * Source files
 
   Following source files are included:
